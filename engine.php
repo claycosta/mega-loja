@@ -32,6 +32,7 @@
     if ($preco_max != "" && $preco_min != 0)
       $url_busca .= "as_price_max=" . $preco_max;
   }
+
   $ch = curl_init($url_busca);
   curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 12);
@@ -39,7 +40,6 @@
   curl_close($ch);
 
   print $resultado_busca;
-
 
 
 
