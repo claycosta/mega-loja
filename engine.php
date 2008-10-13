@@ -1,38 +1,49 @@
 <?php
-  $request_uri = $_SERVER['REQUEST_URI'];
+/*  $request_uri = $_SERVER['REQUEST_URI'];
   $request_uri = str_replace("/bighiloja/", "", $request_uri);
   list($busca, $ordenar, $categoria, $preco) = explode('/', $request_uri);
+*/
 
-  /*  
-  //TODO lembrar de melhorar esse foreach
-  $contador_parte = 0; // O contador existe pra identificar as 3 primeiras partes da URI
-  $opcoes = array();
-  foreach($partes as $parte) {
-    if ($contador == 0) { $busca = $partes[0]; }
-    if ($contador == 1) { $ordenar = $partes[1]; }
-    if ($contador == 2) { $categoria = $partes[2]; }
-    if ($contador > 2) {
-      list($opcao, $valor) = explode(":", $parte);
-      $$opcao = $valor;
-      array_push($opcoes, $$opcao);
-    }
-    $contador++;
-  }
-  */
-  
+  //Se o usuário tiver acessado a Home, ou seja, não buscou nada, geramos uma
+  //busca para garantir que ele verá produtos relevantes ao tipo de loja desejada
+  //Defina $buscaPadrao no index.php para definir os podutos que poderão aparecer na home
+/*  if (!$busca || $busca == "") {
+    $busca = $buscaPadrao[array_rand($buscaPadrao)];
+  }  */
+$busca = $_GET['busca'];
+$categoria = $_GET['categoria'];
+$ordenar = $_GET['ordenar'];
+$preco = $_GET['preco'];
+
+/*
+print "$busca <br/>";
+print "$categoria <br/>";
+print "$ordenar <br/>";
+print "$preco <br/>";
+*/
+
   //Agora gera a URL de busca no mercado livre
   $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?";
-  if ($busca) $url_busca .= "as_word=" . converte($busca) . "&";
-  if ($categoria) $url_busca .= "as_categ_id=" . $categoria . "&";
-  if ($ordenar) $url_busca .= "as_order_id=" . ordenar($ordenar) . "&";
+
+  if ($busca != "" && $busca !== 0)
+    $url_busca .= "as_word=" . toUrl($busca) . "&";
+  
+  if ($categoria && $categoria !== 0)
+    $url_busca .= "as_categ_id=" . $categoria . "&";
+
+  if ($ordenar && $ordenar !== 0)
+    $url_busca .= "as_order_id=" . ordenar($ordenar) . "&";
+
   if ($preco) {
-    list($preco_min, $preco_max) = explode("-", $preco);
-    if ($preco_min != "" && $preco_min != 0)
+    list($preco_min, $preco_max) = explode(":", $preco);
+    if ($preco_min != "" && $preco_min !== 0)
       $url_busca .= "as_price_min=" . $preco_min . "&";
-    if ($preco_max != "" && $preco_min != 0)
+    if ($preco_max != "" && $preco_min !== 0)
       $url_busca .= "as_price_max=" . $preco_max;
   }
 
+print $url_busca;
+/*
   $ch = curl_init($url_busca);
   curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 12);
@@ -40,6 +51,7 @@
   curl_close($ch);
 
   print $resultado_busca;
+*/
 
 
 
@@ -48,12 +60,17 @@
 
 
 
-
-function converte($string) {
+function toUrl($string) {
   $string = str_replace("%20", "+", $string);
   $string = str_replace(" ", "+", $string);
   $string = str_replace("_", "+", $string);
   return $string;
+}
+
+function fromUrl($string) {
+  $string = str_replace("+", " ", $string);
+  $string = str_replace("_", " ", $string);  
+  $string = str_replace("%20", " ", $string);
 }
 
 function ordenar($string) {
@@ -67,8 +84,10 @@ function ordenar($string) {
     case "vis":  //Ordena pelos mais VISitados
       return "HIT_PAGE";
 
-/*    case "bus":  //Ordena pelos mais BUScados
-      return "";*/
+/*
+      case "bus":  //Ordena pelos mais BUScados
+      return "";
+*/
 
     case "bar":  //Ordena pelos mais BARatos
       return "BARATOS";
