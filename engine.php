@@ -23,7 +23,7 @@ print "$preco <br/>";
 */
 
   //Agora gera a URL de busca no mercado livre
-  $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?";
+  $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&";
 
   if ($busca != "" && $busca !== 0)
     $url_busca .= "as_word=" . toUrl($busca) . "&";

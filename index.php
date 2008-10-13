@@ -113,9 +113,62 @@
     </table>
   </div>
 
+<?
+/********************************************************************************
+*********************** MENU LATERAL ********************************************
+********************************************************************************/
+?>
 
+  <div id='menuLat'>
+  
+    <? //TODO Permitir que a imagem do menu seja definida de forma dinâmica como variável no começo deste arquivo ?>
+    <img src='http://loja.3gamers.com.br/img/topoMenuLat.png' />
 
+    <?
+    $busca_url = "";
+    //TODO passar o conteúdo deste foreach para uma função no engine.php, para desentupir o index
+    foreach($menu as $elemento) {
+      list($el_preco_min, $el_preco_max) = explode(":", $elemento['preco']);
+      $busca_url = "http://www.mercadolivre.com.br/jm/searchXml?as_qshow=1&as_site_id=MLB&";
 
+      if($elemento['certificado'] == true)
+        $busca_url .= "as_filtro_id=CERTIFIED&";
+      if($elemento['mercadopago'] == true)
+        $busca_url .= "as_filtro_id2=MPAGO&";
+      if($elemento['busca'])
+        $busca_url .= "as_word=" . toUrl($elemento['busca']) . "&";
+      if($elemento['categoria'])
+        $busca_url .= "as_categ_id=" . $elemento['categoria'] . "&";
+      if($el_preco_min)
+        $busca_url .= "as_price_min=" . $el_preco_min . "&";
+      if($el_preco_max)
+        $busca_url .= "as_price_max=" . $el_preco_max . "&";
+
+      $ch = curl_init($busca_url);
+      curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 12);
+      $resultado_busca = curl_exec($ch);
+      curl_close($ch);
+      $xml = simplexml_load_string($resultado_busca);
+
+      $item = $xml->listing->items->children();      
+      $title = $item->title;
+      $link = $item->link;
+      $image_url = $item->image_url;
+      $price = $item->currency . $item->price;
+      $link = str_ireplace("tool=XXX","tool=".$tool_id, $link);
+    ?>
+
+      <a href="<?=$link?>">
+	      <img src="<?=$image_url?>" /> <br />
+	      <span id="tituloProduto"><?=$title?></span> <br />
+	      <span id="preco"><?=$price?></span>
+	    </a>
+      <br /><br />
+
+    <?
+    }
+    ?>
 
 </body>
 </html>
