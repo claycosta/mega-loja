@@ -99,7 +99,7 @@
 
           <td>
 	          <a href="<?=$link?>">
-              <img src="<?=$image_url?>" /> <br />
+              <img src="<?=$image_url?>" alt="<?=title?>"/> <br />
 	            <span id="tituloProduto"><?=$title?></span> <br />
 	            <span id="preco"><?=$price?></span>
 	          </a>
@@ -160,7 +160,7 @@
     ?>
 
       <a href="<?=$link?>">
-	      <img src="<?=$image_url?>" /> <br />
+	      <img src="<?=$image_url?>" alt="<?=title?>" /> <br />
 	      <span id="tituloProduto"><?=$title?></span> <br />
 	      <span id="preco"><?=$price?></span>
 	    </a>
@@ -169,6 +169,5 @@
     <?
     }
     ?>
-
 </body>
 </html>
