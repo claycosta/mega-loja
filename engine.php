@@ -43,15 +43,16 @@ print "$preco <br/>";
   }
 
 print $url_busca;
-/*
+
   $ch = curl_init($url_busca);
   curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 12);
   $resultado_busca = curl_exec($ch);
   curl_close($ch);
 
-  print $resultado_busca;
-*/
+  $xml = simplexml_load_string($resultado_busca);
+  $items = $xml->listing->items->children();
+
 
 
 
