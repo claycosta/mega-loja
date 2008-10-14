@@ -151,7 +151,7 @@
       curl_close($ch);
       $xml = simplexml_load_string($resultado_busca);
 
-      $item = $xml->listing->items->children();      
+      $item = $xml->listing->items->item->children();      
       $title = $item->title;
       $link = $item->link;
       $image_url = $item->image_url;
@@ -169,5 +169,6 @@
     <?
     }
     ?>
+  </div>
 </body>
 </html>

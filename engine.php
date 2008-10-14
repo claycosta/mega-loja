@@ -1,26 +1,14 @@
 <?php
-/*  $request_uri = $_SERVER['REQUEST_URI'];
-  $request_uri = str_replace("/bighiloja/", "", $request_uri);
-  list($busca, $ordenar, $categoria, $preco) = explode('/', $request_uri);
-*/
-
   //Se o usuário tiver acessado a Home, ou seja, não buscou nada, geramos uma
   //busca para garantir que ele verá produtos relevantes ao tipo de loja desejada
   //Defina $buscaPadrao no index.php para definir os podutos que poderão aparecer na home
-/*  if (!$busca || $busca == "") {
+  if (!$busca || $busca == "") {
     $busca = $buscaPadrao[array_rand($buscaPadrao)];
-  }  */
-$busca = $_GET['busca'];
-$categoria = $_GET['categoria'];
-$ordenar = $_GET['ordenar'];
-$preco = $_GET['preco'];
-
-/*
-print "$busca <br/>";
-print "$categoria <br/>";
-print "$ordenar <br/>";
-print "$preco <br/>";
-*/
+  }
+  $busca = $_GET['busca'];
+  $categoria = $_GET['categoria'];
+  $ordenar = $_GET['ordenar'];
+  $preco = $_GET['preco'];
 
   //Agora gera a URL de busca no mercado livre
   $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&";
@@ -41,8 +29,6 @@ print "$preco <br/>";
     if ($preco_max != "" && $preco_min !== 0)
       $url_busca .= "as_price_max=" . $preco_max;
   }
-
-print $url_busca;
 
   $ch = curl_init($url_busca);
   curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
