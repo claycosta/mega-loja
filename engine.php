@@ -1,95 +1,149 @@
 <?php
-  //Se o usuário tiver acessado a Home, ou seja, não buscou nada, geramos uma
-  //busca para garantir que ele verá produtos relevantes ao tipo de loja desejada
-  //Defina $buscaPadrao no index.php para definir os podutos que poderão aparecer na home
-  if (!$busca || $busca == "") {
-    $busca = $buscaPadrao[array_rand($buscaPadrao)];
-  }
-  $busca = $_GET['busca'];
-  $categoria = $_GET['categoria'];
-  $ordenar = $_GET['ordenar'];
-  $preco = $_GET['preco'];
+  $tool_id = "5431013";
+  $url_loja = "http://xxxx/";
+  $url_site = "http://xxxx/";
+  $nome_site = "3Gamers";
 
-  //Agora gera a URL de busca no mercado livre
-  $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&";
+  $user_id = 'pspawn';
+  $senha_xml = 'UFNQQVdOUFNQQVdO';
 
-  if ($busca != "" && $busca !== 0)
-    $url_busca .= "as_word=" . toUrl($busca) . "&";
-  
-  if ($categoria && $categoria !== 0)
-    $url_busca .= "as_categ_id=" . $categoria . "&";
+  $buscaPadrao = array("playstation 3", "wii", "xbox 360", "psp", "nintendo ds");
 
-  if ($ordenar && $ordenar !== 0)
-    $url_busca .= "as_order_id=" . ordenar($ordenar) . "&";
-
-  if ($preco) {
-    list($preco_min, $preco_max) = explode(":", $preco);
-    if ($preco_min != "" && $preco_min !== 0)
-      $url_busca .= "as_price_min=" . $preco_min . "&";
-    if ($preco_max != "" && $preco_min !== 0)
-      $url_busca .= "as_price_max=" . $preco_max;
-  }
-
-  $ch = curl_init($url_busca);
-  curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 12);
-  $resultado_busca = curl_exec($ch);
-  curl_close($ch);
-
-  $xml = simplexml_load_string($resultado_busca);
-  $items = $xml->listing->items->children();
+  include("engine.php");
 
 
+/* DEFINIÇÃO DE ELEMENTOS PARA O MENU LATERAL */
+//Copie este template para vários produtos, trocando o 0 por 1, 2, 3...
+//Apenas "busca" é um parâmetro obrigatório. Todos os outros são opcionais. Se não quiser usar um deles
+//basta apagar a linha ou deixar em branco "".
 
+  $menu[0]['busca'] = "Playstation 3";  //Aqui você define o termo a ser buscado no ML
+  $menu[0]['categoria'] = "11624";      //Aqui você deve definir o ID da categoria
+  $menu[0]['preco'] = "500:3000";       //Defina preço mínimo e máximo, separado por :
+  $menu[0]['certificado'] = true;       //Se deve listar apenas vendedores certificados
+  $menu[0]['mercadopago'] = true;       //Se deve listar apenas produtos que aceitam Mercado Pago
 
+  $menu[1]['busca'] = "Xbox 360"; 
+  $menu[1]['categoria'] = "11108";
+  $menu[1]['preco'] = "500:3000";
+  $menu[1]['certificado'] = true;
+  $menu[1]['mercadopago'] = true;
 
+  $menu[2]['busca'] = "Wii"; 
+  $menu[2]['categoria'] = "11965";
+  $menu[2]['preco'] = "500:2000";
+  $menu[2]['certificado'] = true;
+  $menu[2]['mercadopago'] = true;
 
+  $menu[3]['busca'] = "PSP"; 
+  $menu[3]['categoria'] = "6772";
+  $menu[3]['preco'] = "400:1500";
+  $menu[3]['certificado'] = true;
+  $menu[3]['mercadopago'] = true;
 
-
-
-function toUrl($string) {
-  $string = str_replace("%20", "+", $string);
-  $string = str_replace(" ", "+", $string);
-  $string = str_replace("_", "+", $string);
-  return $string;
-}
-
-function fromUrl($string) {
-  $string = str_replace("+", " ", $string);
-  $string = str_replace("_", " ", $string);  
-  $string = str_replace("%20", " ", $string);
-}
-
-function ordenar($string) {
-  switch($string) {
-    case "des":  //É o padrão do mercado livre, ordena pelos produtos com destaque
-      return "";
-
-    case "ven":  //Ordena pelos mais VENdidos
-      return "MAS_OFERTADOS";
-
-    case "vis":  //Ordena pelos mais VISitados
-      return "HIT_PAGE";
-
-/*
-      case "bus":  //Ordena pelos mais BUScados
-      return "";
-*/
-
-    case "bar":  //Ordena pelos mais BARatos
-      return "BARATOS";
-
-    case "alfa": //Ordena por ordem ALFAbética
-      return "ITEM_TITLE";
-
-    case "car":  //Ordena pelos mais CARos
-      return "CAROS";
-
-    case "tempo": //Ordena pelo tempo restante do anúncio
-      return "AUCTION_STOP";
-  }
-}
+  $menu[4]['busca'] = "Playstation 2"; 
+  $menu[4]['categoria'] = "4384";
+  $menu[4]['preco'] = "350:1100";
+  $menu[4]['certificado'] = true;
+  $menu[4]['mercadopago'] = true;
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
 
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="keywords" content="<?= fromUrl($busca) ?>, jogos, informática, câmera, psp, playstation, wii, xbox 360, loja, videogame"/>
+  <title><?= ($busca ? 'Loja' : fromUrl($busca)) ?> - <?= $nome_site; ?></title>
+
+  <style>
+    <!--
+    body {background-image:url('http://loja.3gamers.com.br/img/fundo.png');background-repeat: repeat-y; background-position: left; background-color: #4e4741}
+    img { border:0px; }
+    a{text-decoration: none}
+    div#banner {text-align:left; margin:-10px; padding-left: 25px;background-image:url('http://loja.3gamers.com.br/img/fundbanner.jpg');background-repeat: repeat-x }
+    div#loja p {font-size:12px}
+    center {text-align: left}
+    #conteudo {margin-left:25px; margin-top:25px}
+    #conteudo form {position: relative; left:25px}
+    #menuLat{
+    width: 179px; overflow: hidden; position:absolute; left:820px; top:50px;text-align:center;
+	 padding: 0 3px;
+    background-image:url('http://loja.3gamers.com.br/img/fundoMenuLat.PNG');
+	 background-repeat: repeat-y;
+	 background-color:#ffffff;}
+    span#tituloProduto {color:black}
+    span#preco {color:red}
+    table#listagemProdutos {border-spacing: 25px 50px}
+    table#listagemProdutos td {max-width: 160px; text-align:center; border:1px black solid; overflow: hidden;}
+    -->
+  </style>
+</head>
+
+<body>
+  <div id='banner'>
+    <img src='http://loja.3gamers.com.br/img/logoGrafite.png'>
+  </div>
+
+  <div id='conteudo'>
+    <form action="index.php">
+      Busca: <input type="text" name="busca" value="<?= fromUrl($busca); ?>"> <input type="submit" value="Buscar">
+    </form>
+    
+    <table id="listagemProdutos">
+      <tr>
+        <?
+        $contador = 0;
+        foreach($items as $item) {
+          $contador++;
+          $title = $item->title;
+	        $link = $item->link;
+	        $image_url = $item->image_url;
+	        $price = $item->currency . $item->price;
+	        $link = str_ireplace("tool=XXX","tool=".$tool_id, $link);
+        ?>
+
+          <td>
+	          <a href="<?=$link?>">
+              <img src="<?=$image_url?>" alt="<?=$title?>"/> <br />
+	            <span id="tituloProduto"><?=$title?></span> <br />
+	            <span id="preco"><?=$price?></span>
+	          </a>
+	        </td>
+	        <? if($contador % 4 == 0) { echo("</tr><tr>"); } ?>
+
+        <?
+        }
+        ?>
+      </tr>
+    </table>
+  </div>
+
+<?
+/********************************************************************************
+*********************** MENU LATERAL ********************************************
+********************************************************************************/
+?>
+
+  <div id='menuLat'>
+  
+    <? //TODO Permitir que a imagem do menu seja definida de forma dinâmica como variável no começo deste arquivo ?>
+    <img src='http://loja.3gamers.com.br/img/topoMenuLat.png' />
+
+    <?
+    foreach($menu as $elemento) {
+		$produto = busca_um_produto($elemento, $tool_id);
+    ?>
+      <a href="<?=$produto['link']?>">
+	      <img src="<?=$produto['image']?>" alt="<?=$produto['title']?>" /> <br />
+	      <span id="tituloProduto"><?=$produto['title']?></span> <br />
+	      <span id="preco"><?=$produto['price']?></span>
+	    </a>
+      <br /><br />
+    <?
+    }
+    ?>
+  </div>
+</body>
+</html>
 
