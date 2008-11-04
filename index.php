@@ -4,6 +4,9 @@
   $url_site = "http://xxxx/";
   $nome_site = "3Gamers";
 
+  $user_id = 'pspawn';
+  $senha_xml = 'UFNQQVdOUFNQQVdO';
+
   $buscaPadrao = array("playstation 3", "wii", "xbox 360", "psp", "nintendo ds");
 
   include("engine.php");
@@ -15,7 +18,7 @@
 //basta apagar a linha ou deixar em branco "".
 
   $menu[0]['busca'] = "Playstation 3";  //Aqui você define o termo a ser buscado no ML
-  $menu[0]['categoria'] = "11624";           //Aqui você deve definir o ID da categoria
+  $menu[0]['categoria'] = "11624";      //Aqui você deve definir o ID da categoria
   $menu[0]['preco'] = "500:3000";       //Defina preço mínimo e máximo, separado por :
   $menu[0]['certificado'] = true;       //Se deve listar apenas vendedores certificados
   $menu[0]['mercadopago'] = true;       //Se deve listar apenas produtos que aceitam Mercado Pago
@@ -51,7 +54,7 @@
 <head>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
   <meta name="keywords" content="<?= fromUrl($busca) ?>, jogos, informática, câmera, psp, playstation, wii, xbox 360, loja, videogame"/>
-  <title><?= fromUrl($busca); ?> - <?= $nome_site; ?></title>
+  <title><?= ($busca ? 'Loja' : fromUrl($busca)) ?> - <?= $nome_site; ?></title>
 
   <style>
     <!--
@@ -65,7 +68,10 @@
     #conteudo form {position: relative; left:25px}
     #menuLat{
     width: 179px; overflow: hidden; position:absolute; left:820px; top:50px;text-align:center;
-    background-image:url('http://loja.3gamers.com.br/img/fundoMenuLat.PNG');background-repeat: repeat-y; background-color:#ffffff;}
+	 padding: 0 3px;
+    background-image:url('http://loja.3gamers.com.br/img/fundoMenuLat.PNG');
+	 background-repeat: repeat-y;
+	 background-color:#ffffff;}
     span#tituloProduto {color:black}
     span#preco {color:red}
     table#listagemProdutos {border-spacing: 25px 50px}
@@ -99,7 +105,7 @@
 
           <td>
 	          <a href="<?=$link?>">
-              <img src="<?=$image_url?>" alt="<?=title?>"/> <br />
+              <img src="<?=$image_url?>" alt="<?=$title?>"/> <br />
 	            <span id="tituloProduto"><?=$title?></span> <br />
 	            <span id="preco"><?=$price?></span>
 	          </a>
@@ -125,50 +131,19 @@
     <img src='http://loja.3gamers.com.br/img/topoMenuLat.png' />
 
     <?
-    $busca_url = "";
-    //TODO passar o conteúdo deste foreach para uma função no engine.php, para desentupir o index
     foreach($menu as $elemento) {
-      list($el_preco_min, $el_preco_max) = explode(":", $elemento['preco']);
-      $busca_url = "http://www.mercadolivre.com.br/jm/searchXml?as_qshow=1&as_site_id=MLB&";
-
-      if($elemento['certificado'] == true)
-        $busca_url .= "as_filtro_id=CERTIFIED&";
-      if($elemento['mercadopago'] == true)
-        $busca_url .= "as_filtro_id2=MPAGO&";
-      if($elemento['busca'])
-        $busca_url .= "as_word=" . toUrl($elemento['busca']) . "&";
-      if($elemento['categoria'])
-        $busca_url .= "as_categ_id=" . $elemento['categoria'] . "&";
-      if($el_preco_min)
-        $busca_url .= "as_price_min=" . $el_preco_min . "&";
-      if($el_preco_max)
-        $busca_url .= "as_price_max=" . $el_preco_max . "&";
-
-      $ch = curl_init($busca_url);
-      curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 12);
-      $resultado_busca = curl_exec($ch);
-      curl_close($ch);
-      $xml = simplexml_load_string($resultado_busca);
-
-      $item = $xml->listing->items->item->children();      
-      $title = $item->title;
-      $link = $item->link;
-      $image_url = $item->image_url;
-      $price = $item->currency . $item->price;
-      $link = str_ireplace("tool=XXX","tool=".$tool_id, $link);
+		$produto = busca_um_produto($elemento, $tool_id);
     ?>
-
-      <a href="<?=$link?>">
-	      <img src="<?=$image_url?>" alt="<?=title?>" /> <br />
-	      <span id="tituloProduto"><?=$title?></span> <br />
-	      <span id="preco"><?=$price?></span>
+      <a href="<?=$produto['link']?>">
+	      <img src="<?=$produto['image']?>" alt="<?=$produto['title']?>" /> <br />
+	      <span id="tituloProduto"><?=$produto['title']?></span> <br />
+	      <span id="preco"><?=$produto['price']?></span>
 	    </a>
       <br /><br />
-
     <?
     }
     ?>
   </div>
 </body>
 </html>
+
