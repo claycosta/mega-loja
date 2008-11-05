@@ -13,7 +13,7 @@
   }
 
   //Agora gera a URL de busca no mercado livre
-  $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&user={$user_id}&pwd={$senha_xml}&as_qshow=25";
+  $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&user={$user_id}&pwd={$senha_xml}&as_qshow=20";
 
   if ($busca != "" && $busca !== 0)
     $url_busca .= "&as_word=" . toUrl($busca);
@@ -32,16 +32,11 @@
       $url_busca .= "&as_price_max=" . $preco_max;
   }
 
-  $handler = fopen($url_busca, 'r');
-  $resultado_busca = stream_get_contents($handler);
-  fclose($handler);
-  $xml = simplexml_load_string($resultado_busca);
-  $items = $xml->listing->items->children();
-
-
-
-
-
+	$handler = fopen($url_busca, 'r');
+	$resultado_busca = stream_get_contents($handler);
+	fclose($handler);
+	$xml = simplexml_load_string($resultado_busca);
+	$items = $xml->listing->items->children();
 
 
 
@@ -57,6 +52,7 @@ function fromUrl($string) {
   $string = str_replace("+", " ", $string);
   $string = str_replace("_", " ", $string);  
   $string = str_replace("%20", " ", $string);
+  return $string;
 }
 
 function ordenar($string) {
@@ -91,24 +87,24 @@ function ordenar($string) {
 
 	function busca_um_produto($dados, $tool_id) {
 		list($el_preco_min, $el_preco_max) = explode(":", $dados['preco']);
-		$busca_url = "http://www.mercadolivre.com.br/jm/searchXml?as_qshow=1&as_site_id=MLB&";
+		$busca_url = "http://www.mercadolivre.com.br/jm/searchXml?as_qshow=1&as_site_id=MLB";
 
 		if($dados['preco']) {
 			list($el_preco_min, $el_preco_max) = explode(':', $dados['preco']);
 		}
 
 		if($dados['certificado'] == true)
-        $busca_url .= "as_filtro_id=CERTIFIED&";
+        $busca_url .= "&as_filtro_id=CERTIFIED";
       if($dados['mercadopago'] == true)
-        $busca_url .= "as_filtro_id2=MPAGO&";
-      if($dados['busca'])
-        $busca_url .= "as_word=" . toUrl($dados['busca']) . "&";
+        $busca_url .= "&as_filtro_id2=MPAGO";
+		if($dados['busca'])
+        $busca_url .= "&as_word=" . toUrl($dados['busca']);
       if($dados['categoria'])
-        $busca_url .= "as_categ_id=" . $dados['categoria'] . "&";
+        $busca_url .= "&as_categ_id=" . $dados['categoria'];
       if($el_preco_min)
-        $busca_url .= "as_price_min=" . $el_preco_min . "&";
+        $busca_url .= "&as_price_min=" . $el_preco_min;
       if($el_preco_max)
-        $busca_url .= "as_price_max=" . $el_preco_max . "&";
+        $busca_url .= "&as_price_max=" . $el_preco_max;
 
 		$handler = fopen($busca_url, 'r');
 		$resultado_busca = stream_get_contents($handler);
@@ -116,14 +112,18 @@ function ordenar($string) {
       $xml = simplexml_load_string($resultado_busca);
 
 		$item = $xml->listing->items->item->children();
-		$produto['title'] = $item->title;
+		$produto['title'] = sanitize($item->title);
 		$produto['link'] = str_ireplace("tool=XXX","tool=".$tool_id, $item->link);
-		$produto['image'] = $item->image_url;
+		$produto['link'] = sanitize($produto['link']);
+		$produto['image'] = sanitize($item->image_url);
 		$produto['price'] = $item->currency . $item->price;
 
 		return $produto;
 	}
 
+	function sanitize($string) {
+		$string = str_ireplace("&","&amp;", $string);
+		return utf8_encode($string);
+	}
+
 ?>
-
-
