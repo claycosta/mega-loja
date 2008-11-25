@@ -1,0 +1,10 @@
+Options +FollowSymLinks
+
+# Turn on the RewriteEngine
+RewriteEngine On
+
+# Rules
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule /?([a-zA-Z0-9áéíóúçãõâêôÁÉÍÓÚñ!?:._,]*)/?([a-zA-Z0]*)/?([0-9]*)/?([0-9:]*)/?$ index.php?busca=$1&ordenar=$2&categoria=$3&preco=$4
