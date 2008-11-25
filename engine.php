@@ -214,5 +214,3 @@ function ordenar($string) {
 		}
 	}
 ?>
-
-
