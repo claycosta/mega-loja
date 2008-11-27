@@ -18,11 +18,11 @@
   if ($busca != "" && $busca !== 0)
     $url_busca .= "&as_word=" . toUrl($busca);
   
-  if ($categoria && $categoria !== 0)
-    $url_busca .= "&as_categ_id=" . $categoria;
-
   if ($ordenar && $ordenar !== 0)
     $url_busca .= "&as_order_id=" . ordenar($ordenar);
+
+  if ($categoria && $categoria !== 0)
+    $url_busca .= "&as_categ_id=" . $categoria;
 
   if ($preco) {
     list($preco_min, $preco_max) = explode(":", $preco);
