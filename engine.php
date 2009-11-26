@@ -1,44 +1,44 @@
 <?php
+require_once('./padroes.php');
 
-  $busca = @$_GET['busca'];
-  $categoria = @$_GET['categoria'];
-  $ordenar = @$_GET['ordenar'];
-  $preco = @$_GET['preco'];
+foreach ($_GET as $variavel => $valor) {
+  $$variavel = $valor;
+}
 
-  //Se o usuário tiver acessado a Home, ou seja, não buscou nada, geramos uma
-  //busca para garantir que ele verá produtos relevantes ao tipo de loja desejada
-  //Defina $buscaPadrao no index.php para definir os podutos que poderão aparecer na home
-  if (empty($busca)) {
-    $busca = $buscaPadrao[array_rand($buscaPadrao)];
-  }
+//Se o usuário tiver acessado a Home, ou seja, não buscou nada, geramos uma
+//busca para garantir que ele verá produtos relevantes ao tipo de loja desejada
+//Defina $buscaPadrao no padroes.php para definir os podutos que poderão aparecer na home
+if (empty($busca)) {
+  $busca = $buscaPadrao[array_rand($buscaPadrao)];
+}
 
-  //Agora gera a URL de busca no mercado livre
-  $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&user={$user_id}&pwd={$senha_xml}&as_qshow=20&charset=UTF-8";
+//Agora gera a URL de busca no mercado livre
+$url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&user={$user_id}&pwd={$senha_xml}&as_qshow=20&charset=UTF-8";
 
-  if ($busca != "" && $busca !== 0)
-    $url_busca .= "&as_word=" . toUrl($busca);
-  
-  if ($categoria && $categoria !== 0)
-    $url_busca .= "&as_categ_id=" . $categoria;
+if ($busca != "" && $busca !== 0)
+  $url_busca .= "&as_word=" . toUrl($busca);
 
-  if ($ordenar && $ordenar !== 0)
-    $url_busca .= "&as_order_id=" . ordenar($ordenar);
+if ($categoria && $categoria !== 0)
+  $url_busca .= "&as_categ_id=" . $categoria;
 
-  if ($preco) {
-    list($preco_min, $preco_max) = explode(":", $preco);
-    if ($preco_min != "" && $preco_min !== 0)
-      $url_busca .= "&as_price_min=" . $preco_min;
-    if ($preco_max != "" && $preco_min !== 0)
-      $url_busca .= "&as_price_max=" . $preco_max;
-  }
+if ($ordenar && $ordenar !== 0)
+  $url_busca .= "&as_order_id=" . ordenar($ordenar);
 
-	$handler = fopen($url_busca, 'r');
-	$resultado_busca = stream_get_contents($handler);
-	fclose($handler);
-	$xml = simplexml_load_string($resultado_busca);
-	$itens = $xml->listing->items->children();
+if ($preco) {
+  list($preco_min, $preco_max) = explode(":", $preco);
+  if (!empty($preco_min) && $preco_min !== 0)
+    $url_busca .= "&as_price_min=" . $preco_min;
+  if ($preco_max != "" && $preco_min !== 0)
+    $url_busca .= "&as_price_max=" . $preco_max;
+}
 
-	$categories = $xml->listing->result_categories->children();
+$handler = fopen($url_busca, 'r');
+$resultado_busca = stream_get_contents($handler);
+fclose($handler);
+$xml = simplexml_load_string($resultado_busca);
+$itens = $xml->listing->items->children();
+
+$categories = $xml->listing->result_categories->children();
 
 /**********************************************************************************/
 

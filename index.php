@@ -1,51 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
-	/*
-	 * TODO coisas ainda a fazer:
-	 * - Adicionar links para ordenar por mais visitados, mais baratos, etc
-	 * - No <h2> do menu lateral, adicionar uma cor de fundo que seja contrastante, mas não feia
-	 *
-	 */
-	global $url_loja, $tool_id, $nome_loja, $categories, $busca;
-
-	//Adicione aqui a sua ID da ferramenta no Mercado Sócios
-  	$tool_id = "5432563";
-  
-	//Modifique a linha abaixo para indicar a página inicial da sua loja
-	//não esqueça de colocar a / (barra) no final do endereço
-	$url_loja = "http://loja.tomatecru.net/";
-	
-	//Modifique a linha abaixo para indicar o nome da sua loja.
-	$nome_loja = "Loja Tomate Cru";
-	
-	//Modifique a linha abaixo para indicar seu nome de usuário no Mercado Livre
-	$user_id = 'pspawn';
-	
-	//Modifique a linha abaixo para indicar sua senha XML do mercado livre
-	//A loja funciona mesmo se você não tiver uma senha xml, mas sem ela não é possível obter
-	//mais de 10 produtos a cada busca.
-	$senha_xml = 'UFNQQVdOUFNQQVdO';
-	//A senha XML pode ser obtida no fórum do Mercado Sócios, ou enviando uma mensagem diretamente
-	//para os responsáveis.
-
-	//Uma descrição da loja, que será usada para informar aos buscadores do que a sua página se trata.
-	//Use algumas palavras-chave no meio do texto.
-	$descricao_loja = "Loja Tomate Cru. De tudo um pouco, mas o preço é louco.";
-	
-	//Se o usuário acessar a página inicial da loja sem ter buscado por nada, então um dos elementos
-	//da buscaPadrao será usado aleatoriamente. O array pode conter qualquer quantidade de elementos,
-	//desde que tenha pelo menos 1 elemento para buscar.
-	$buscaPadrao = array("smartphone", "mp3", "mp4", "iphone");
-		
-	//NÃO EDITE NADA A PARTIR DESSA LINHA, A MENOS QUE SAIBA O QUE ESTÁ FAZENDO
-
-	include("engine.php");
-
+	require_once("engine.php");
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt-br" lang="pt-br">
 <head>
 	<meta http-equiv="Content-type" content="text/html;charset=utf-8" />
-	<meta name="keywords" content="<?= fromUrl($busca) ?>, ipod, smartphone, promoção, mp3, mp4" />
+	<?= $keywords_tag() ?>
 	<meta name="language" content="pt-br" />
 	<meta name="description" content="<?= $descricao_loja ?> Resultado da busca por: <?= fromUrl($busca) ?>." />
 	<title><?= the_title() ?></title>
