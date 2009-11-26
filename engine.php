@@ -4,6 +4,7 @@ require_once('./padroes.php');
 foreach ($_GET as $variavel => $valor) {
   $$variavel = $valor;
 }
+$busca = from_url($busca);
 
 //Se o usuário tiver acessado a Home, ou seja, não buscou nada, geramos uma
 //busca para garantir que ele verá produtos relevantes ao tipo de loja desejada
@@ -55,16 +56,16 @@ function lista_categorias($categorias) {
 	print link_to($busca, 'ven');
 }
 
-function toUrl($string) {
+function to_url($string) {
   $string = str_replace("%20", "+", $string);
   $string = str_replace(" ", "+", $string);
   $string = str_replace("_", "+", $string);
   return $string;
 }
 
-function fromUrl($string) {
+function from_url($string) {
   $string = str_replace("+", " ", $string);
-  $string = str_replace("_", " ", $string);  
+  $string = str_replace("_", " ", $string);
   $string = str_replace("%20", " ", $string);
   return $string;
 }
@@ -108,22 +109,22 @@ function ordenar($string) {
 		}
 
 		if($dados['certificado'] == true)
-        $busca_url .= "&as_filtro_id=CERTIFIED";
-      if($dados['mercadopago'] == true)
-        $busca_url .= "&as_filtro_id2=MPAGO";
+      $busca_url .= "&as_filtro_id=CERTIFIED";
+    if($dados['mercadopago'] == true)
+      $busca_url .= "&as_filtro_id2=MPAGO";
 		if($dados['busca'])
-        $busca_url .= "&as_word=" . toUrl($dados['busca']);
-      if($dados['categoria'])
-        $busca_url .= "&as_categ_id=" . $dados['categoria'];
-      if($el_preco_min)
-        $busca_url .= "&as_price_min=" . $el_preco_min;
-      if($el_preco_max)
-        $busca_url .= "&as_price_max=" . $el_preco_max;
+      $busca_url .= "&as_word=" . toUrl($dados['busca']);
+    if($dados['categoria'])
+      $busca_url .= "&as_categ_id=" . $dados['categoria'];
+    if($el_preco_min)
+      $busca_url .= "&as_price_min=" . $el_preco_min;
+    if($el_preco_max)
+      $busca_url .= "&as_price_max=" . $el_preco_max;
 
 		$handler = fopen($busca_url, 'r');
 		$resultado_busca = stream_get_contents($handler);
 		fclose($handler);
-      $xml = simplexml_load_string($resultado_busca);
+    $xml = simplexml_load_string($resultado_busca);
 
 		$item = $xml->listing->items->item->children();
 		$produto['title'] = sanitize($item->title);
@@ -141,18 +142,7 @@ function ordenar($string) {
 		return $string;
 	}
 
-	function pega_texto($busca) {
-		if( in_array($busca, array('perfume', 'perfumes', 'eau de toilette', 'locao', 'loção', )) )
-			$nome = 'perfume';
-		else
-			$nome = 'perfume';
 
-		$h = fopen($nome. '.txt', 'r');
-		$texto = stream_get_contents($h);
-		fclose($h);
-
-		return $texto;
-	}
 
 	function link_to($busca, $ordenar = '', $categoria = '', $preco = '') {
 		global $url_loja;

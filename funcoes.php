@@ -1,4 +1,9 @@
 <?php
+function busca() {
+  global $busca;
+  return $busca;
+}
+
 function keywords($extra_keywords = null) {
   $the_keywords = fromUrl($busca);
   
@@ -18,8 +23,8 @@ function tag_keywords($extra_keywords = null) {
 }
 
 function titulo() {
-	global $loja, $busca;
-	$titulo = sanitize(fromUrl($busca)) . " - " . $loja['nome'];
+	global $loja;
+	$titulo = sanitize(fromUrl(busca())) . " - " . $loja['nome'];
 	return $titulo;
 }
 
@@ -27,3 +32,14 @@ function tag_titulo() {
   return "<title>" . titulo() . "</title>";
 }
 
+function texto($texto = null) {
+	if ($texto == null) {
+    switch(busca()) {
+  	  default:
+  	    $texto = 'default.txt';
+  	}
+  }
+	
+  return file_get_contents("$texto.txt");
+}
+}

@@ -1,9 +1,9 @@
 <?php
 	global $url_loja, $tool_id, $categories, $busca;
-	global $loja;
+	global $loja, $options;
 
 	#Adicione aqui a sua ID da ferramenta no Mercado Sócios
-	$tool_id = "5432563";
+	$loja['tool_id'] = "5432563";
   
 	//Modifique a linha abaixo para indicar a página inicial da sua loja
 	//não esqueça de colocar a / (barra) no final do endereço
@@ -18,7 +18,7 @@
 	//Modifique a linha abaixo para indicar sua senha XML do mercado livre
 	//A loja funciona mesmo se você não tiver uma senha xml, mas sem ela não é possível obter
 	//mais de 10 produtos a cada busca.
-	$senha_xml = 'UFNQQVdOUFNQQVdO';
+	$loja['senha_xml'] = 'UFNQQVdOUFNQQVdO';
 	//A senha XML pode ser obtida no fórum do Mercado Sócios, ou enviando uma mensagem diretamente
 	//para os responsáveis.
 
@@ -29,4 +29,8 @@
 	//Se o usuário acessar a página inicial da loja sem ter buscado por nada, então um dos elementos
 	//da buscaPadrao será usado aleatoriamente. 
 	//O array pode conter qualquer quantidade de elementos, desde que tenha pelo menos 1 elemento para buscar.
-	$buscaPadrao = array("smartphone", "mp3", "mp4", "iphone");
+	$options['busca_padrao'] = array("smartphone", "mp3", "mp4", "iphone");
+	
+	//Quantos resultados você quer exibir para cada busca?
+	//Note que só é possível obter mais de 10 resultados se você possuir uma senha xml (veja acima)
+	$options['num_resultados'] = 25;
