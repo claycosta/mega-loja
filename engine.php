@@ -1,9 +1,4 @@
 <?php
-foreach ($_GET as $variavel => $valor) {
-  $busca[$variavel] = $valor;
-}
-$busca['busca'] = from_url($busca['busca']);
-
 //Se o usuário tiver acessado a Home, ou seja, não buscou nada, geramos uma
 //busca para garantir que ele verá produtos relevantes ao tipo de loja desejada
 //Defina $buscaPadrao no padroes.php para definir os podutos que poderão aparecer na home
@@ -11,47 +6,11 @@ if (empty($busca)) {
   $busca['busca'] = busca_aleatoria();
 }
 
-//Agora gera a URL de busca no mercado livre
-function gera_url_busca() {
-  global $user_id, $loja, $busca;
-  $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&user={$user_id}&pwd={$loja['senha_xml']}&as_qshow=20&charset=UTF-8";
-  
-  if ($busca['busca'] != "" && $busca['busca'] !== 0)
-    $url_busca .= "&as_word=" . to_url($busca['busca']);
-  
-  if ($busca['categoria'] && $busca['categoria'] !== 0)
-    $url_busca .= "&as_categ_id=" . $busca['categoria'];
-  
-  if ($busca['ordenar'] && $busca['ordenar'] !== 0)
-    $url_busca .= "&as_order_id=" . ordenar($busca['ordenar']);
-  
-  if ($busca['preco']) {
-    list($preco_min, $preco_max) = explode(":", $busca['preco']);
-    if (!empty($preco_min) && $preco_min !== 0)
-      $url_busca .= "&as_price_min=" . $preco_min;
-    if ($preco_max != "" && $preco_min !== 0)
-      $url_busca .= "&as_price_max=" . $preco_max;
-  }
-  
-  return $url_busca;
-}
+
 
 /* Recebe a url da busca e retorna um array contendo um array de itens, e outro array de categorias
   De preferencia, a url da busca vem da função gera_url_busca() */
-function busca_produtos($url_busca) {
-  $handler = fopen($url_busca, 'r');
-  $resultado_busca = stream_get_contents($handler);
-  fclose($handler);
-  
-  $xml = simplexml_load_string($resultado_busca);
-  $itens = $xml->listing->items->children();
-  $categorias = $xml->listing->result_categories->children();
-  
-  $resultado['itens'] = $itens;
-  $resultado['categorias'] = $categorias;
-  
-  return $resultado;
-}
+
 
 /**********************************************************************************/
 
@@ -66,20 +25,6 @@ function lista_categorias($categorias) {
 		print '<a href="' . $url_loja . sanitize($cat_name) . "/" . 'ven/' . $cat_id . "/" . '">' . sanitize($cat_name) . "</a>, ";
 	}
 	print link_to($busca, 'ven');
-}
-
-function to_url($string) {
-  $string = str_replace("%20", "+", $string);
-  $string = str_replace(" ", "+", $string);
-  $string = str_replace("_", "+", $string);
-  return $string;
-}
-
-function from_url($string) {
-  $string = str_replace("+", " ", $string);
-  $string = str_replace("_", " ", $string);
-  $string = str_replace("%20", " ", $string);
-  return $string;
 }
 
 function ordenar($string) {
