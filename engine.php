@@ -1,45 +1,57 @@
 <?php
-require_once('./padroes.php');
-
 foreach ($_GET as $variavel => $valor) {
-  $$variavel = $valor;
+  $busca[$variavel] = $valor;
 }
-$busca = from_url($busca);
+$busca['busca'] = from_url($busca['busca']);
 
 //Se o usuário tiver acessado a Home, ou seja, não buscou nada, geramos uma
 //busca para garantir que ele verá produtos relevantes ao tipo de loja desejada
 //Defina $buscaPadrao no padroes.php para definir os podutos que poderão aparecer na home
 if (empty($busca)) {
-  $busca = $buscaPadrao[array_rand($buscaPadrao)];
+  $busca['busca'] = busca_aleatoria();
 }
 
 //Agora gera a URL de busca no mercado livre
-$url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&user={$user_id}&pwd={$senha_xml}&as_qshow=20&charset=UTF-8";
-
-if ($busca != "" && $busca !== 0)
-  $url_busca .= "&as_word=" . toUrl($busca);
-
-if ($categoria && $categoria !== 0)
-  $url_busca .= "&as_categ_id=" . $categoria;
-
-if ($ordenar && $ordenar !== 0)
-  $url_busca .= "&as_order_id=" . ordenar($ordenar);
-
-if ($preco) {
-  list($preco_min, $preco_max) = explode(":", $preco);
-  if (!empty($preco_min) && $preco_min !== 0)
-    $url_busca .= "&as_price_min=" . $preco_min;
-  if ($preco_max != "" && $preco_min !== 0)
-    $url_busca .= "&as_price_max=" . $preco_max;
+function gera_url_busca() {
+  global $user_id, $loja, $busca;
+  $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&user={$user_id}&pwd={$loja['senha_xml']}&as_qshow=20&charset=UTF-8";
+  
+  if ($busca['busca'] != "" && $busca['busca'] !== 0)
+    $url_busca .= "&as_word=" . to_url($busca['busca']);
+  
+  if ($busca['categoria'] && $busca['categoria'] !== 0)
+    $url_busca .= "&as_categ_id=" . $busca['categoria'];
+  
+  if ($busca['ordenar'] && $busca['ordenar'] !== 0)
+    $url_busca .= "&as_order_id=" . ordenar($busca['ordenar']);
+  
+  if ($busca['preco']) {
+    list($preco_min, $preco_max) = explode(":", $busca['preco']);
+    if (!empty($preco_min) && $preco_min !== 0)
+      $url_busca .= "&as_price_min=" . $preco_min;
+    if ($preco_max != "" && $preco_min !== 0)
+      $url_busca .= "&as_price_max=" . $preco_max;
+  }
+  
+  return $url_busca;
 }
 
-$handler = fopen($url_busca, 'r');
-$resultado_busca = stream_get_contents($handler);
-fclose($handler);
-$xml = simplexml_load_string($resultado_busca);
-$itens = $xml->listing->items->children();
-
-$categories = $xml->listing->result_categories->children();
+/* Recebe a url da busca e retorna um array contendo um array de itens, e outro array de categorias
+  De preferencia, a url da busca vem da função gera_url_busca() */
+function busca_produtos($url_busca) {
+  $handler = fopen($url_busca, 'r');
+  $resultado_busca = stream_get_contents($handler);
+  fclose($handler);
+  
+  $xml = simplexml_load_string($resultado_busca);
+  $itens = $xml->listing->items->children();
+  $categorias = $xml->listing->result_categories->children();
+  
+  $resultado['itens'] = $itens;
+  $resultado['categorias'] = $categorias;
+  
+  return $resultado;
+}
 
 /**********************************************************************************/
 
@@ -166,34 +178,6 @@ function ordenar($string) {
 		global $nome_loja, $busca;
 		$titulo = sanitize(fromUrl($busca)) . " - " . $nome_loja;
 		return $titulo;
-	}
-
-	//Gera uma tabela, com os produtos encontrados na busca
-	function lista_produtos($itens) {
-		global $tool_id, $busca;
-
-		print "<table id=\"listagemProdutos\"><tr>";
-		$contador = 0;
-		foreach($itens as $item) {
-			if($contador > 0 && $contador % 4 == 0) { echo("</tr><tr>"); }
-			$contador++;
-			$title = $item->title;
-			$link = $item->link;
-			$image_url = sanitize($item->image_url);
-			$price = $item->currency . $item->price;
-			$link = str_ireplace("tool=XXX","tool=".$tool_id, $link);
-			$link = sanitize($link);
-
-			print "<td>
-				<a href=\"$link\">
-					<img src=\"$image_url\" alt=\"".sanitize($title)." - ".sanitize($busca)."\" width=\"90\"
-						height=\"90\" /> <br />
-					<span class=\"tituloProduto\">".sanitize($title)."</span> <br />
-					<span class=\"preco\">$price</span>
-				</a>
-			</td>";
-		}
-		print "</tr></table>";
 	}
 
 	function lista_recomendados($recomendados) {

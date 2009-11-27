@@ -1,15 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<?php
-	require_once("engine.php");
-?>
+<?php require_once("main.php"); ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt-br" lang="pt-br">
 <head>
-	<meta http-equiv="Content-type" content="text/html;charset=utf-8" />
-	<?= $keywords_tag() ?>
-	<meta name="language" content="pt-br" />
-	<meta name="description" content="<?= $descricao_loja ?> Resultado da busca por: <?= fromUrl($busca) ?>." />
-	<title><?= the_title() ?></title>
-	<link type="text/css" rel="stylesheet" href="/loja.css" charset="utf8" />
+	<?= head() ?>
 	<script type="text/javascript">
 	function beforeSubmit() {
 		formularioBusca = document.formBusca;
@@ -21,7 +14,6 @@
 </head>
 
 <body>
-
 	<div id="conteiner">
 		<div id="banner"><img src="http://loja.tomatecru.net/img/bannerlogo.png"/></div>
 
@@ -30,16 +22,11 @@
 				<!-- Inserir código com links recomendados -->
 			</div>
 
-			<form action="<?= $url_loja; ?>index.php" name="formBusca" onSubmit="beforeSubmit()">
-				<p>
-					<label for="busca">O que você procura?</label> <input type="text" tabindex="1" name="busca" id="busca" alt="Busca" accesskey="b" value="<?= fromUrl($busca); ?>"/>
-					<input type="submit" id="submit" value="Buscar" tabindex="2" accesskey="e" />
-				</p>
-			</form>
+			<?= form_busca() ?>
 
-			<h1><?= the_header(); ?></h1>
+			<h1><?= busca() ?></h1>
 
-			<?= lista_produtos($itens); ?>
+			<?= lista_produtos($resultado['itens']); ?>
 
 			<p id="categorias"><?= lista_categorias($categories) ?></p>
 
