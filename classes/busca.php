@@ -1,7 +1,7 @@
 <?php
 class Busca {
-  public $itens = null;
-  public $categorias = null;
+  public $itens = array();
+  public $categorias = array();
   public $url_busca = null;
   public $busca = array();
   
@@ -19,7 +19,8 @@ class Busca {
   public function gera_url() {
     $url_busca = "http://www.mercadolivre.com.br/jm/searchXml?as_site_id=MLB&user=" . $this->loja->user_id;
     $url_busca .= "&pwd=" . $this->loja->senha_xml;
-    $url_busca .= "&as_qshow=20&charset=UTF-8";
+    $url_busca .= "&as_qshow=" . $this->loja->quantidade_por_pagina;
+    $url_busca .= "&charset=UTF-8";
     
     if ($this->busca['busca'] != "" && $this->busca['busca'] !== 0)
       $url_busca .= "&as_word=" . to_url($this->busca['busca']);
@@ -57,7 +58,18 @@ class Busca {
     $itens = $xml->listing->items->children();
     $categorias = $xml->listing->result_categories->children();
     
-    $this->itens = $itens;
+    foreach($itens as $item) {
+      $novo_item = new Produto($item, $this->loja);
+      array_push($this->itens, $novo_item);
+      unset($novo_item);
+    }
+    
+    foreach($categorias as $categoria) {
+      $nova_categoria = new Produto($categoria, $this->loja);
+      array_push($this->categorias, $nova_categoria);
+      unset($nova_categoria);
+    }
+    
     $this->categorias = $categorias;
     
     return $this;

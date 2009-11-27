@@ -27,36 +27,6 @@ function lista_categorias($categorias) {
 	print link_to($busca, 'ven');
 }
 
-function ordenar($string) {
-  switch($string) {
-    case "des":  //É o padrão do mercado livre, ordena pelos produtos com destaque
-      return "";
-
-    case "ven":  //Ordena pelos mais VENdidos
-      return "MAS_OFERTADOS";
-
-    case "vis":  //Ordena pelos mais VISitados
-      return "HIT_PAGE";
-
-/*
-      case "bus":  //Ordena pelos mais BUScados
-      return "";
-*/
-
-    case "bar":  //Ordena pelos mais BARatos
-      return "BARATOS";
-
-    case "alfa": //Ordena por ordem ALFAbética
-      return "ITEM_TITLE";
-
-    case "car":  //Ordena pelos mais CARos
-      return "CAROS";
-
-    case "tempo": //Ordena pelo tempo restante do anúncio
-      return "AUCTION_STOP";
-  }
-}
-
 	function busca_um_produto($dados, $tool_id) {
 		list($el_preco_min, $el_preco_max) = explode(":", $dados['preco']);
 		$busca_url = "http://www.mercadolivre.com.br/jm/searchXml?as_qshow=1&as_site_id=MLB";
@@ -93,11 +63,7 @@ function ordenar($string) {
 		return $produto;
 	}
 
-	function sanitize($string, $capitalize = false) {
-		$string = str_ireplace("&","&amp;", $string);
-		$string[0] = strtoupper($string[0]);
-		return $string;
-	}
+
 
 
 
