@@ -1,0 +1,152 @@
+body {
+  background-image: url(bg.png);
+}
+
+div#container {
+  margin: 5% 5% 0;
+}
+
+div#header {
+  border: 1px solid #FFF;
+  background-color: #FFF;
+  border-radius: 5px;
+  padding: 0 1em;
+  box-shadow: 0 0 4px #999;
+  height: 80px;
+  vertical-align: middle;
+}
+
+div#header h1 {
+  display: inline-block;
+  height: 80px;
+}
+
+div#header ul {
+  display: inline-block;
+  height: 80px;
+  float: right;
+  list-style: none;
+  margin: 0;
+}
+
+div#header ul li {
+  display: inline-block;
+  height: 80px;
+  margin: 0;
+}
+
+div#header ul li a {
+  text-decoration: none;
+  padding: 0 18px;
+  line-height: 80px;
+}
+
+
+/**** BUSCA ****/
+
+div#busca {
+  margin-top: 9px;
+  float: right;
+  background: transparent;
+  border: none;
+}
+
+div#busca input {
+  font-size: 21px;
+  box-shadow: 0 0 4px #999;
+  border: none;
+  height: 27px;
+  padding: 0;
+  margin: 0;
+}
+
+div#busca input[type="text"] {
+  width: 360px;
+  color: #343434;
+  background: white;
+  float: left;
+  border-top-left-radius: 1em;
+  border-bottom-left-radius: 1em;
+  padding-left: 0.5em;
+}
+
+div#busca input[type="submit"] {
+  float: right;
+  background: lightgreen;
+  border-top-right-radius: 1em;
+  border-bottom-right-radius: 1em;
+  padding: 0 8px 0 4px;
+  color: #444;
+}
+
+
+/**** DESTAQUE ****/
+
+div#destaque {
+  width: 100%;
+  clear: both;
+  float: none;
+  text-align: center;
+}
+
+div#destaque div.produto {
+  text-align: left;
+  margin: 90px 15% 36px;
+  overflow: auto;
+  position: relative;
+}
+
+div#destaque div.produto img {
+  float: left;
+  height: 210px;
+  vertical-align: middle;
+  clear: none;
+  margin-right: 27px;
+}
+
+div#destaque div.produto p {
+  display: inline;
+  font-size: 28px;
+  color: #444;
+  clear: right;
+}
+
+div#destaque div.produto span {
+  display: block;
+  font-size: 150%;
+  margin-top: 27px;
+  text-shadow: 0 0 1px #282;
+}
+
+
+/**** LISTA DE PRODUTOS ****/
+
+div#lista_produtos {
+  clear: both;
+}
+
+div#lista_produtos div.produto {
+  //display: inline-block;
+  float: left;
+  width: 15%;
+  margin: 36px 2.5%;
+  height: 210px;
+  overflow: hidden;
+  text-align: center;
+}
+
+div#lista_produtos div.produto img {
+  height: 90px;
+  max-width: 100%;
+}
+
+div#lista_produtos div.produto p {
+  text-align: left;
+  margin: 9px 0 9px 0;  
+}
+
+div#lista_produtos div.produto span {
+  margin: 0;
+  text-align: left;
+  font-weight: bold;
+}

@@ -7,4 +7,4 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-RewriteRule /?([a-zA-Z0-9áéíóúçãõâêôÁÉÍÓÚñ!?:._,]*)/?([a-zA-Z0]*)/?([0-9]*)/?([0-9:]*)/?$ index.php?busca=$1&ordenar=$2&categoria=$3&preco=$4
+RewriteRule /?([a-zA-Z0-9áéíóúçãõâêôÁÉÍÓÚñ!?:._,]*)/?([a-zA-Z0]*)/?([0-9:]*)/?([0-9]*)/?$ index.php?frase=$1&ordenacao=$2&categoria=$3&preco=$4
